@@ -1,0 +1,15 @@
+{
+    "scripts": {
+        "preserve": "cp ./node_modules/@robincore/inappwebview-provider/build/inappwebview-provider.js ./provider.js",
+        "serve": "node serve.js 3600"
+    },
+    "dependencies": {
+        "@robincore/inappwebview-provider": "^1.1.5"
+    },
+    "devDependencies": {
+        "browserify": "^17.0.0",
+        "tsify": "^5.0.4",
+        "typescript": "^4.9.5",
+        "uglifyjs": "^2.4.11"
+    }
+}

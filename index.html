@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Test InAppWebProvider Class
+        </title>
+    </head>
+    <body>
+        <input placeholder="enter json rpc methods" id="rpcMethod" />
+        <input placeholder="params ( if any comma seperated )" id="params" />
+        <button onclick="request()">Sumbit</button>
+        <div>
+            Request
+            <p id="request"></p>
+        </div>
+        <div>
+            Response
+            <p id="response">
+            </p>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.2/web3.min.js" integrity="sha512-Ls8WO4Esu7Jb9a92BfIp1Ftgl9t5Ncaa/6zKzpOkTGXW+dPcJcI4Yz2HR7cXY0YcfIAsL7R9Gqfbw8ERX8iYaA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="./provider.js"></script>
+        <script type="text/javascript">
+            let { InAppProvider } = window.inAppProvider
+            let inAppInstance = new InAppProvider({
+                currentAddress: "0x8392932",
+                currentProvider: "https://bsc-dataseed.binance.org/",
+                chainId: "0x61"
+            })
+
+            let inAppHandler = new Proxy(inAppInstance, {})
+            const ethereum = inAppHandler
+            let web3
+
+            async function init() {
+                if ( window.ethereum ) {
+                    web3 = new Web3(window.ethereum)
+                    console.log("web3 initialized")
+                }
+            }
+
+            async function request() {
+                document.getElementById("response").innerHTML = "loading"
+                const method = document.getElementById("rpcMethod").value
+                const params = document.getElementById("params").value
+
+                const paramsWrapped = params === "" ? [] : params.split(",")
+
+                console.log(method, params, paramsWrapped)
+
+                document.getElementById("request").innerHTML = `
+                Method Name: <b>${method}</b><br/>
+                Parameters: <b>${JSON.stringify(paramsWrapped)}</b>
+                `
+
+                try {
+                    const response = await ethereum.request({method, params: paramsWrapped})
+                    console.log(response)
+                    document.getElementById("response").innerHTML = response instanceof Object ? JSON.stringify(response) : response
+                } catch(err) {
+                    document.getElementById("response").innerHTML = err.data ? err.data.message : err.message
+                }
+            }
+
+            init()
+        </script>
+    </body>
+</html>
